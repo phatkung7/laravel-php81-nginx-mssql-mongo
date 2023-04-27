@@ -1,4 +1,5 @@
-# lume-php81-nginx
- HomC (MSSQL)
+# Lumen
+1.Git Clone Your Project and Create with folder name "web" 
 # Install Docker
 docker-compose up -d
+
