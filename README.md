@@ -10,11 +10,9 @@
 - Install Docker and Docker Compose
 - Clone This Repo First 
 - Clone Your Laravel App and Create with Folder Name "web" 
-- Run
+- Run Below Command on Current Directory
 ```bash
     docker-compose up -d
 ```
-on Current Directory
-
 ## Authors
 - [@phatkung7](https://github.com/phatkung7)
