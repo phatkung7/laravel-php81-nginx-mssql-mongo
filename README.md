@@ -14,7 +14,9 @@
 ```bash
     docker-compose up -d
 ```
-# How To Custom 
+- Already Done go to next step
+
+# How To Custom Your Environment
 - Run Below Command For Run composer update
 ```bash
     docker exec -it app bash
