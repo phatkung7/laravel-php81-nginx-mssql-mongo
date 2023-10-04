@@ -33,6 +33,10 @@ cURL error 77: error setting certificate verify locations: CAfile: /usr/local/et
 - Download from (https://curl.haxx.se/ca/cacert.pem)
 - Add This Line on php/local.ini curl.cainfo = /path/to/your/cacert.pem
 - Restart app Container
+# How To Fixed PEM
+```bash
+sudo docker cp cacert.pem app:/usr/local/etc/php/conf.d/cacert.pem
+```
 # How To Use Feature
 - Web Application http://localhost
 - phpMyAdmin http://localhost:8080
