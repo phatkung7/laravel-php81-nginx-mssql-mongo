@@ -34,19 +34,15 @@ services:
       - app-network
   #MySQL Service
   db:
-    image: mysql:latest
-    container_name: db
-    cap_add:
-      - SYS_NICE  # CAP_SYS_NICE
+    image: mysql:8.0
+    container_name: mysql_db
     restart: unless-stopped
-    tty: true
     ports:
       - "3306:3306"
+    env_file:
+      - mysql-secret.env  # Reference the .env file
     environment:
-      MYSQL_DATABASE: laravel-project
-      MYSQL_ROOT_PASSWORD: "Rootp@ssw0rd"
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
     volumes:
       - dbdata:/var/lib/mysql/
       - ./mysql/my.cnf:/etc/mysql/my.cnf
@@ -56,10 +52,12 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
+    env_file:
+      - mysql-secret.env  # Reference the .env file
     environment:
       PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: "Rootp@ssw0rd"
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
     ports:
       - "8080:80"
     networks:
