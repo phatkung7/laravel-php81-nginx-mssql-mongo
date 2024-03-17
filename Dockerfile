@@ -1,4 +1,7 @@
 FROM php:8.1-fpm
+# Arguments defined in docker-compose.yml
+# ARG user
+# ARG uid
 # Copy composer.lock and composer.json into the working directory
 COPY ./web/composer.lock /var/www/html/ 
 COPY ./web/composer.json /var/www/html/
@@ -22,8 +25,6 @@ RUN apt-get update && apt-get install -y \
     nano
 
 #Download appropriate package for the OS version
-# Install MongoDB Connect
-RUN pecl install mongodb
 RUN apt-get update \
     && apt-get install -y curl apt-transport-https locales gnupg2
 # Install MSSQL Connect
@@ -46,8 +47,8 @@ RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install gd
 
-# Install composer (php package manager)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Get latest Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
@@ -58,9 +59,19 @@ RUN apt-get install --yes nodejs
 # Cleanup
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove -y
 
+# Create system user to run Composer and Artisan Commands
+# RUN useradd -G www-data,root -u $uid -d /home/$user $user
+# RUN mkdir -p /home/$user/.composer && \
+#     chown -R $user:$user /home/$user
+
 # Copy existing application directory contents to the working directory
 COPY . /var/www/html
 COPY openssl.cnf /etc/ssl/openssl.cnf
+COPY cacert.pem /usr/local/etc/php/conf.d/cacert.pem
+
+# Set working directory
+# WORKDIR /var/www/html
+# USER $user
 
 # Expose port 9000 and start php-fpm server (for FastCGI Process Manager)
 EXPOSE 9000

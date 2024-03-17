@@ -1,12 +1,15 @@
-version: '3.5'
+version: '3.7'
 services:
   #PHP Service
   app:
     build:
-      context: .
+      # args:
+      #   user: dds506
+      #   uid: 1000
+      context: ./
       dockerfile: Dockerfile
     image: digitalocean.com/php
-    container_name: app
+    container_name: dds506-app
     restart: unless-stopped
     tty: true
     environment:
@@ -24,23 +27,21 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:80" 
     volumes:
       - ./web:/var/www
       - ./nginx/conf.d/:/etc/nginx/conf.d/
-      - ./ssl:/etc/ssl/certs/
     networks:
       - app-network
   #MySQL Service
   db:
-    image: mysql:8.0
-    container_name: mysql_db
+    image: mysql:latest
+    container_name: mysql8-db
     restart: unless-stopped
     ports:
       - "3306:3306"
     env_file:
-      - mysql-secret.env  # Reference the .env file
+      - database.env
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
     volumes:
@@ -52,14 +53,14 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
     restart: always
+    container_name: phpmyadmin
     env_file:
-      - mysql-secret.env  # Reference the .env file
-    environment:
-      PMA_HOST: db
-      PMA_USER: ${PMA_USER}
-      PMA_PASSWORD: ${PMA_PASSWORD}
+      - database.env
+      - phpmyadmin.env
     ports:
       - "8080:80"
+    depends_on:
+      - db
     networks:
       - app-network
 #Docker Networks
@@ -70,3 +71,6 @@ networks:
 volumes:
   dbdata:
     driver: local
+
+
+
