@@ -51,6 +51,7 @@ RUN docker-php-ext-install gd
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install Node.js
+RUN apt-get update && apt-get install -y curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
 RUN apt-get install --yes nodejs
 # RUN node -v
